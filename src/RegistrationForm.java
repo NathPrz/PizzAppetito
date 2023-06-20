@@ -1,2 +1,114 @@
-public class RegistrationForm {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+
+public class RegistrationForm extends JDialog {
+
+    private JTextField tfNom;
+    private JTextField tfPrenom;
+    private JPasswordField pfMotDePasse;
+    private JButton btnConfirmer;
+    private JButton btnAnnuller;
+    private JPanel PnlEnregistrement;
+    private JTextField tfEmail;
+
+    public RegistrationForm(JFrame parent) {
+         super(parent);
+         setTitle("Créer un compte");
+         setContentPane(PnlEnregistrement);
+         setMinimumSize(new Dimension(450,474));
+         setModal(true);
+         setLocationRelativeTo(parent);
+         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        btnConfirmer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enregistrerClient();
+            }
+        });
+        btnAnnuller.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+        setVisible(true);
+    }
+
+    private void enregistrerClient() {
+        String nom = tfNom.getText();
+        String prenom = tfPrenom.getText();
+        String email = tfEmail.getText();
+        String mdp = String.valueOf(pfMotDePasse.getPassword());
+        if(nom.isEmpty() || prenom.isEmpty() || email.isEmpty() ||mdp.isEmpty()){
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Aucun champ ne peut être vide",
+                    "Réessayez",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        client = ajouterClientDb(nom, prenom, email, mdp);
+        if(client != null){
+            dispose();
+        }
+        else {
+            JOptionPane.showMessageDialog(this,
+                    "Impossible d'enregistrer le compte",
+                    "Réessayez",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public Client client;
+    private Client ajouterClientDb(String nom, String prenom, String email, String mdp) {
+        Client client = null;
+        final String db_URL = "jdbc:mysql://localhost/pizzAppetito?serverTimezone=UTC";
+        final String userName = "root";
+        final String motDPasse = "root";
+        try {
+            Connection c = DriverManager.getConnection(db_URL, userName, motDPasse);
+            // Connexion établie
+            Statement s = c.createStatement();
+            String sql = "INSERT INTO client (nom, prenom, mail, mdp" +
+                    "VALUES (?, ?, ?, ?)";
+            PreparedStatement pStm = c.prepareStatement(sql);
+            pStm.setString(1, nom);
+            pStm.setString(2, prenom);
+            pStm.setString(3, email);
+            pStm.setString(4, mdp);
+            // Insert
+            int addLine = pStm.executeUpdate();
+            if(addLine > 0){
+                client = new Client();
+                client.nom = nom;
+                client.prenom = prenom;
+                client.email = email;
+                client.mdp = mdp;
+            }
+            s.close();
+            c.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return client;
+    }
+
+
+    public static void main(String[] args) {
+        RegistrationForm registrationForm = new RegistrationForm( null);
+        Client client = registrationForm.client;
+        if(client != null){
+            System.out.println("Client enregistré");
+        }
+        else{
+            System.out.println("Enregistrement annullé");
+        }
+    }
 }
