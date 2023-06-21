@@ -3,4 +3,6 @@ public class Client {
     public String prenom;
     public String email;
     public String mdp;
+    public Float solde;
+    public Integer nbPizzas;
 }

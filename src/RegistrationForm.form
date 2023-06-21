@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="RegistrationForm">
   <grid id="27dc6" binding="PnlEnregistrement" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="20" left="20" bottom="20" right="20"/>
+    <margin top="30" left="30" bottom="30" right="30"/>
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
@@ -15,7 +15,7 @@
         <properties>
           <font name="Segoe Print" size="18" style="1"/>
           <horizontalTextPosition value="11"/>
-          <icon value="icons8-user-48.png"/>
+          <icon value="icons8-registration-100.png"/>
           <text value="Créer un compte "/>
         </properties>
       </component>
@@ -48,7 +48,7 @@
       </component>
       <component id="961c4" class="javax.swing.JTextField" binding="tfNom">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="1" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -58,7 +58,7 @@
       </component>
       <component id="68705" class="javax.swing.JTextField" binding="tfPrenom">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="1" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -68,13 +68,14 @@
       </component>
       <component id="1ebbc" class="javax.swing.JPasswordField" binding="pfMotDePasse">
         <constraints>
-          <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="1" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
         <properties>
           <font/>
-          <text value="pswField"/>
+          <text value=""/>
+          <toolTipText value=""/>
         </properties>
       </component>
       <component id="21334" class="javax.swing.JButton" binding="btnConfirmer">
@@ -105,7 +106,7 @@
       </component>
       <component id="52d43" class="javax.swing.JTextField" binding="tfEmail">
         <constraints>
-          <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="1" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>

@@ -75,8 +75,9 @@ public class RegistrationForm extends JDialog {
         try {
             Connection c = DriverManager.getConnection(db_URL, userName, motDPasse);
             // Connexion établie
+            System.out.println("Init connexion");
             Statement s = c.createStatement();
-            String sql = "INSERT INTO client (nom, prenom, mail, mdp" +
+            String sql = "INSERT INTO client (nom, prenom, mail, mdp)" +
                     "VALUES (?, ?, ?, ?)";
             PreparedStatement pStm = c.prepareStatement(sql);
             pStm.setString(1, nom);
