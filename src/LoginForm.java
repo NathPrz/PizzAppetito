@@ -15,35 +15,32 @@ public class LoginForm extends JDialog{
         setTitle("Connexion");
         setContentPane(PnlLogin);
         setMinimumSize(new Dimension(450,474));
-        setModal(true);
+        setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setVisible(true);
+
         btnConnexion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = tfLogin.getText();
                 String mdp = String.valueOf(pfMdp.getPassword());
-                /*if(email.isEmpty() ||mdp.isEmpty()){
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Aucun champ ne peut être vide",
-                            "Réessayez",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }*/
+
                 client = getAuthentificationClient(email, mdp);
                 if(client != null){
                     dispose();
+                    //Pour Lancement de fenetre commande
+                    // OrderForm pnlCommande = new OrderForm(parent);
                 }
-               /* else {
-                    JOptionPane.showMessageDialog(this,
-                            "Impossible d'enregistrer le compte",
+                else{
+                    JOptionPane.showMessageDialog(
+                            LoginForm.this,
+                            "Email ou mot de passe incorrecte.",
                             "Réessayez",
                             JOptionPane.ERROR_MESSAGE);
-                }*/
+                }
             }
         });
+        setVisible(true);
     }
 
     public Client client;
@@ -82,5 +79,14 @@ public class LoginForm extends JDialog{
 
     public static void main(String[] args) {
         LoginForm loginForm = new LoginForm(null);
+        Client client = loginForm.client;
+        if (client!= null){
+            System.out.println("Auth valide");
+            System.out.println("Client " + client.nom + client.prenom);
+        }
+        else{
+            System.out.println("Erreur d'authentification");
+        }
+
     }
 }

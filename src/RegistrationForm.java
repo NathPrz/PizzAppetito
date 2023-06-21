@@ -16,13 +16,14 @@ public class RegistrationForm extends JDialog {
     private JButton btnAnnuller;
     private JPanel PnlEnregistrement;
     private JTextField tfEmail;
+    private JTextField tfAdresse;
 
     public RegistrationForm(JFrame parent) {
          super(parent);
          setTitle("Créer un compte");
          setContentPane(PnlEnregistrement);
          setMinimumSize(new Dimension(450,474));
-         setModal(true);
+         setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
          setLocationRelativeTo(parent);
          setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
