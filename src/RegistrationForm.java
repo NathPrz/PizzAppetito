@@ -70,11 +70,8 @@ public class RegistrationForm extends JDialog {
     public Client client;
     private Client ajouterClientDb(String nom, String prenom, String email, String mdp) {
         Client client = null;
-        final String db_URL = "jdbc:mysql://localhost/pizzAppetito?serverTimezone=UTC";
-        final String userName = "root";
-        final String motDPasse = "root";
         try {
-            Connection c = DriverManager.getConnection(db_URL, userName, motDPasse);
+            Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
             // Connexion établie
             System.out.println("Init connexion");
             Statement s = c.createStatement();
