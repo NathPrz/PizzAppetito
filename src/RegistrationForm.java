@@ -67,15 +67,15 @@ public class RegistrationForm extends JDialog {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-    public Client client;
-    private Client ajouterClientDb(String nom, String prenom, String email, String mdp) {
-        Client client = null;
+    public Utilisateur client;
+    private Utilisateur ajouterClientDb(String nom, String prenom, String email, String mdp) {
+        Utilisateur client = null;
         try {
             Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
             // Connexion établie
             System.out.println("Init connexion");
             Statement s = c.createStatement();
-            String sql = "INSERT INTO client (nom, prenom, mail, mdp)" +
+            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp)" +
                     "VALUES (?, ?, ?, ?)";
             PreparedStatement pStm = c.prepareStatement(sql);
             pStm.setString(1, nom);
@@ -85,7 +85,7 @@ public class RegistrationForm extends JDialog {
             // Insert
             int addLine = pStm.executeUpdate();
             if(addLine > 0){
-                client = new Client();
+                client = new Utilisateur();
                 client.nom = nom;
                 client.prenom = prenom;
                 client.email = email;
@@ -102,7 +102,7 @@ public class RegistrationForm extends JDialog {
 
     public static void main(String[] args) {
         RegistrationForm registrationForm = new RegistrationForm( null);
-        Client client = registrationForm.client;
+        Utilisateur client = registrationForm.client;
         if(client != null){
             System.out.println("Client enregistré");
         }

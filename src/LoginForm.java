@@ -43,14 +43,14 @@ public class LoginForm extends JDialog{
         setVisible(true);
     }
 
-    public Client client;
-    private Client getAuthentificationClient(String email, String mdp) {
-        Client client = null;
+    public Utilisateur client;
+    private Utilisateur getAuthentificationClient(String email, String mdp) {
+        Utilisateur client = null;
         try {
             Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
             // Connexion établie
             Statement s = c.createStatement();
-            String sql = "SELECT * FROM client WHERE mail=? AND mdp=?";
+            String sql = "SELECT * FROM utilisateur WHERE mail=? AND mdp=?";
             PreparedStatement pStm = c.prepareStatement(sql);
             pStm.setString(1, email);
             pStm.setString(2, mdp);
@@ -58,7 +58,7 @@ public class LoginForm extends JDialog{
             // Resultat
             ResultSet resultSet = pStm.executeQuery();
             if(resultSet.next()){
-                client = new Client();
+                client = new Utilisateur();
                 client.nom = resultSet.getString("nom");
                 client.prenom = resultSet.getString("prenom");
                 client.email = resultSet.getString("mail");
@@ -76,7 +76,7 @@ public class LoginForm extends JDialog{
 
     public static void main(String[] args) {
         LoginForm loginForm = new LoginForm(null);
-        Client client = loginForm.client;
+        Utilisateur client = loginForm.client;
         if (client!= null){
             System.out.println("Auth valide");
             System.out.println("Client " + client.nom + client.prenom);
