@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 
 public class RegisterDriverForm extends JDialog{
     private JPanel PnlRegisterDriver;
@@ -29,8 +28,8 @@ public class RegisterDriverForm extends JDialog{
         BtnAddDriver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                enregistrerLivreur();
-                ListDrivers pnlDriver = new ListDrivers(null);
+                Boolean isSaved = enregistrerLivreur();
+                if (isSaved) {ListDrivers pnlDriver = new ListDrivers(null);}
             }
         });
 
@@ -67,7 +66,7 @@ public class RegisterDriverForm extends JDialog{
         return user;
     }
 
-    private void enregistrerLivreur() {
+    private Boolean enregistrerLivreur() {
         String nom = tfNom.getText();
         String prenom = tfPrenom.getText();
         String mail = tfMail.getText();
@@ -78,18 +77,20 @@ public class RegisterDriverForm extends JDialog{
                     "Aucun champ ne peut être vide",
                     "Réessayez",
                     JOptionPane.ERROR_MESSAGE);
-            return;
+            return false;
         }
         livreur = ajouterClientDb(nom, prenom, mail, mdp);
         if(livreur != null){
             dispose();
+            return true;
         }
-        else {
-            JOptionPane.showMessageDialog(this,
-                    "Impossible d'enregistrer le compte",
-                    "Réessayez",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+
+        JOptionPane.showMessageDialog(this,
+                "Impossible d'enregistrer le compte",
+                "Réessayez",
+                JOptionPane.ERROR_MESSAGE);
+
+        return false;
     }
 
     public static void main(String[] args) {
