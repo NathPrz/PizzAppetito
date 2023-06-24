@@ -31,6 +31,9 @@ public class RegistrationForm extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enregistrerClient();
+                if(parent.getClass().getName() == "ListUsersInterface"){
+                    ListUsersInterface listUsers = new ListUsersInterface(null);
+                }
             }
         });
         btnAnnuller.addActionListener(new ActionListener() {
@@ -75,8 +78,8 @@ public class RegistrationForm extends JDialog {
             // Connexion établie
             System.out.println("Init connexion");
             Statement s = c.createStatement();
-            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp)" +
-                    "VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp, role)" +
+                    "VALUES (?, ?, ?, ?, 1)";
             PreparedStatement pStm = c.prepareStatement(sql);
             pStm.setString(1, nom);
             pStm.setString(2, prenom);
