@@ -31,7 +31,7 @@ public class LoginForm extends JDialog{
                     if(client.role == 1)
                     {
                         //Pour Lancement de fenetre commande
-                        //OrderForm pnlCommande = new OrderForm(parent);
+                        OrderForm pnlCommande = new OrderForm(parent);
                     } else if (client.role == 0) {
                         //Pour Lancement de fenetre admin
                         AdminInterface pnlAdmin = new AdminInterface();
@@ -50,7 +50,7 @@ public class LoginForm extends JDialog{
         setVisible(true);
     }
 
-    public Utilisateur client;
+    public static Utilisateur client;
     private Utilisateur getAuthentificationClient(String email, String mdp) {
         Utilisateur client = null;
         try {

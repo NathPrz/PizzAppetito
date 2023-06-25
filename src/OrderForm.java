@@ -18,7 +18,7 @@ public class OrderForm extends JDialog {
 
     public OrderForm(JFrame parent) {
         super(parent);
-        setTitle("Order");
+        setTitle("Commande");
         setContentPane(orderPanel);
         setMinimumSize(new Dimension(450,650));
         setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
