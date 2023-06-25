@@ -160,14 +160,17 @@ public class OrderForm extends JDialog {
         if (client.nbPizzas == 10) {
             updateNbPizzasOnly(client);
 
-            updateTableCommande(client, pizzaName, pizzaSize, totalPrice);
-
             JOptionPane.showMessageDialog(
                     OrderForm.this,
                     "Félicitations! Votre pizza est gratuite!",
                     "Confirmation",
                     JOptionPane.INFORMATION_MESSAGE);
+
             dispose();
+
+            totalPrice = 0f;
+            updateTableCommande(client, pizzaName, pizzaSize, totalPrice);
+
             return; //
         }
 
@@ -181,18 +184,10 @@ public class OrderForm extends JDialog {
             preparedStatement.setString(3, client.email);
             preparedStatement.executeUpdate();
 
-            updateTableCommande(client, pizzaName, pizzaSize, totalPrice);
-
-            JOptionPane.showMessageDialog(
-                    OrderForm.this,
-                    "Commande passée avec succès!",
-                    "Confirmation",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            System.exit(0);
-
             preparedStatement.close();
             connection.close();
+
+            updateTableCommande(client, pizzaName, pizzaSize, totalPrice);
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(
@@ -229,6 +224,7 @@ public class OrderForm extends JDialog {
         try {
             Connection connection = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
 
+            int idLivreur = getRandomLivreurId();
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String dateCommande = now.format(formatter);
@@ -241,9 +237,32 @@ public class OrderForm extends JDialog {
             insertStatement.setInt(3, getPizzaSizeValue(pizzaSize));
             insertStatement.setFloat(4, totalPrice);
             insertStatement.setInt(5, getIdUtilisateur(client));
-            insertStatement.setInt(6, getRandomLivreurId());
+            insertStatement.setInt(6, idLivreur);
             insertStatement.setInt(7, getIdPizza(pizzaName));
             insertStatement.executeUpdate();
+
+            JOptionPane.showMessageDialog(
+                    OrderForm.this,
+                    "Commande passée avec succès!",
+                    "Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+
+            // Afficher le résumé de la commande
+            String deliveryPersonName = getDeliveryPersonName(idLivreur);
+            StringBuilder summaryBuilder = new StringBuilder();
+            summaryBuilder.append("Résumé de votre commande \n");
+            summaryBuilder.append("Pizza : ").append(pizzaName).append("\n");
+            summaryBuilder.append("Prix total : ").append(totalPrice).append(" €").append("\n");
+            summaryBuilder.append("Livreur en charge : ").append(deliveryPersonName).append("\n");
+
+            JOptionPane.showMessageDialog(OrderForm.this,
+                    summaryBuilder.toString(),
+                    "Résumé de la commande",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            System.exit(0);
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(
@@ -264,6 +283,7 @@ public class OrderForm extends JDialog {
             if (resultSet.next()) {
                 return resultSet.getFloat("prix");
             }
+
             preparedStatement.close();
             connection.close();
         } catch (SQLException ex) {
@@ -283,6 +303,7 @@ public class OrderForm extends JDialog {
             if (resultSet.next()) {
                 return resultSet.getInt("idUtilisateur");
             }
+
             preparedStatement.close();
             connection.close();
         } catch (SQLException ex) {
@@ -301,6 +322,7 @@ public class OrderForm extends JDialog {
             if (resultSet.next()) {
                 return resultSet.getInt("idPizza");
             }
+
             preparedStatement.close();
             connection.close();
         } catch (SQLException ex) {
@@ -359,6 +381,28 @@ public class OrderForm extends JDialog {
             default:
                 return -1;
         }
+    }
+
+    private String getDeliveryPersonName(int idLivreur) {
+        try {
+            Connection connection = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
+            String selectQuery = "SELECT nom, prenom FROM Utilisateur WHERE idUtilisateur = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            preparedStatement.setInt(1, idLivreur);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String nom = resultSet.getString("nom");
+                String prenom = resultSet.getString("prenom");
+                return nom + " " + prenom;
+            }
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
     public static void main(String[] args) {
 
