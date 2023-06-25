@@ -17,15 +17,30 @@ public class OrderForm extends JDialog {
     private JPanel orderPanel;
     private JTextField tfSolde;
     private JTextField tfNbPizzas;
+    private JLabel labelMargarita;
+    private JLabel labelVegetariana;
+    private JLabel labelQuattroFormaggi;
+    private JLabel labelCalzone;
+    private JLabel labelTartufo;
+    private JLabel labelMediterranea;
+
 
     public OrderForm(JFrame parent) {
         super(parent);
         setTitle("Commande");
         setContentPane(orderPanel);
-        setMinimumSize(new Dimension(550,750));
+        setMinimumSize(new Dimension(700,800));
         setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        labelMargarita.setText(getIngredients("Margarita"));
+        labelVegetariana.setText(getIngredients("Vegetariana"));
+        labelQuattroFormaggi.setText(getIngredients("Quattro Formaggi"));
+        labelCalzone.setText(getIngredients("Calzone"));
+        labelTartufo.setText(getIngredients("Tartufo"));
+        labelMediterranea.setText(getIngredients("Mediterranea"));
+
         buttonMargarita.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -68,6 +83,39 @@ public class OrderForm extends JDialog {
         tfNbPizzas.setText(String.valueOf(LoginForm.client.nbPizzas));
 
         setVisible(true);
+    }
+
+    private String getIngredients(String pizzaName){
+        String ingredients = new String();
+
+        try {
+            Connection connection = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
+
+            String sql = "SELECT GROUP_CONCAT(i.nom) AS 'ingredients' " +
+                    "FROM pizza AS p, ingredient AS i, compose AS cmp " +
+                    "WHERE cmp.idPizza = p.idPizza " +
+                    "AND cmp.idIngredient = i.idIngredient " +
+                    "AND p.nom = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, pizzaName);
+
+            ResultSet resultset = stmt.executeQuery();
+
+            while(resultset.next()){
+                ingredients = resultset.getString("ingredients");
+            }
+
+            connection.close();
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(OrderForm.this,
+                    "Erreur lors de la recharge de solde.",
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return ingredients;
     }
 
     private void placeOrder(String pizzaName) {
@@ -228,17 +276,15 @@ public class OrderForm extends JDialog {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String dateCommande = now.format(formatter);
-            String dateLivraison = now.format(formatter);
 
-            String insertQuery = "INSERT INTO Commande (dateCommande, dateLivraison, taille, prixFinal, idUtilisateur, idLivreur, idPizza) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String insertQuery = "INSERT INTO Commande (dateCommande, dateLivraison, taille, prixFinal, idUtilisateur, idLivreur, idPizza) VALUES (?, NULL, ?, ?, ?, ?, ?)";
             PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
             insertStatement.setString(1, dateCommande);
-            insertStatement.setString(2, dateLivraison);
-            insertStatement.setInt(3, getPizzaSizeValue(pizzaSize));
-            insertStatement.setFloat(4, totalPrice);
-            insertStatement.setInt(5, getIdUtilisateur(client));
-            insertStatement.setInt(6, idLivreur);
-            insertStatement.setInt(7, getIdPizza(pizzaName));
+            insertStatement.setInt(2, getPizzaSizeValue(pizzaSize));
+            insertStatement.setFloat(3, totalPrice);
+            insertStatement.setInt(4, getIdUtilisateur(client));
+            insertStatement.setInt(5, idLivreur);
+            insertStatement.setInt(6, getIdPizza(pizzaName));
             insertStatement.executeUpdate();
 
             JOptionPane.showMessageDialog(
