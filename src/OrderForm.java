@@ -219,12 +219,12 @@ public class OrderForm extends JDialog {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    public static int idLivreur;
     private void updateTableCommande(Utilisateur client, String pizzaName, String pizzaSize, float totalPrice) {
         try {
             Connection connection = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
 
-            int idLivreur = getRandomLivreurId();
+            idLivreur = getRandomLivreurId();
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String dateCommande = now.format(formatter);
@@ -261,7 +261,10 @@ public class OrderForm extends JDialog {
                     "Résumé de la commande",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            System.exit(0);
+
+            //System.exit(0);
+            dispose();
+            DeliveryForm deliveryForm = new DeliveryForm(OrderForm.this);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
