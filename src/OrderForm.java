@@ -310,7 +310,6 @@ public class OrderForm extends JDialog {
 
             //System.exit(0);
             dispose();
-            DeliveryForm deliveryForm = new DeliveryForm(OrderForm.this);
 
         } catch (SQLException ex) {
             ex.printStackTrace();

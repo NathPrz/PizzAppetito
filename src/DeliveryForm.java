@@ -1,88 +1,78 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.*;
 import java.sql.*;
-import java.time.format.*;
 
-public class DeliveryForm extends JDialog {
-    private JButton buttonVoiture1;
-    private JButton buttonVoiture2;
-    private JButton buttonMoto;
-    private JPanel deliveryPanel;
+public class DeliveryForm extends JDialog{
+    private JPanel pnlLivraison;
+    private JTable tCommandes;
 
-    private LocalDateTime deliveryDate;
-    private int selectedVehicleId;
-
-    public DeliveryForm(OrderForm parent) {
+    public DeliveryForm(JFrame parent) {
         super(parent);
-        setTitle("Livraison");
-        setContentPane(deliveryPanel);
-        setMinimumSize(new Dimension(450, 474));
+        setTitle("Livreur");
+        setContentPane(pnlLivraison);
+        setMinimumSize(new Dimension(450,474));
         setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        buttonVoiture1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedVehicleId = 1;
-                showDeliveryDateDialog();
-            }
-        });
 
-        buttonVoiture2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedVehicleId = 3;
-                showDeliveryDateDialog();
-            }
-        });
-
-        buttonMoto.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedVehicleId = 2;
-                showDeliveryDateDialog();
-            }
-        });
-
+        Utilisateur livreur = LoginForm.client;
+        createTables();
+        getOrdersList();
         setVisible(true);
     }
+    private void createTables() {
 
-    private void showDeliveryDateDialog() {
-        String input = JOptionPane.showInputDialog(DeliveryForm.this, "Entrez la date de livraison (format : yyyy-mm-dd HH:mm:ss) :");
-        if (input != null && !input.isEmpty()) {
-            try {
-                deliveryDate = LocalDateTime.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                updateConduitTable(); // Appeler la méthode pour mettre à jour la table "conduit"
-                dispose();
-            } catch (DateTimeParseException e) {
-                JOptionPane.showMessageDialog(DeliveryForm.this, "Format de date invalide.", "Erreur", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(DeliveryForm.this, "Veuillez entrer une date de livraison.", "Erreur", JOptionPane.ERROR_MESSAGE);
-        }
+        tCommandes.setModel(new DefaultTableModel(
+                null,
+                new String[]{"Id Commande", "Date Commande", "Pizza", "Client", "Adresse", "Vehicule", "Date Livraison"}
+        ));
+
     }
 
-    private void updateConduitTable() {
-        int idLivreur = OrderForm.idLivreur;
+    private void getOrdersList(){
+        Utilisateur livreur = LoginForm.client;
+
+        DefaultTableModel commandes = (DefaultTableModel) tCommandes.getModel();
+
+        commandes.setRowCount(0);
 
         try {
-            Connection connection = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
-            String query = "INSERT INTO conduit (idLivreur, idVehicule, dateOccupation, dateRendu) VALUES (?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, idLivreur);
-            statement.setInt(2, selectedVehicleId);
-            statement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
-            statement.setTimestamp(4, Timestamp.valueOf(deliveryDate));
-            statement.executeUpdate();
+            Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
 
-            statement.close();
-            connection.close();
+            // Connexion établie
+            Statement s = c.createStatement();
 
-            System.exit(0);
-        } catch (SQLException e) {
+            // Commandes qui sont en cours de livraison
+            String sql_livraison =
+                    "SELECT " +
+                            "cmd.idCommande, cmd.dateCommande, CONCAT(u.nom, ' ' , u.prenom) AS 'client'," +
+                            "u.adresse As 'adresse'," +
+                            "p.nom AS 'pizza' " +
+                            "FROM commande AS cmd, utilisateur AS u, pizza AS p " +
+                            "WHERE cmd.idUtilisateur = u.idUtilisateur " +
+                            "AND cmd.idPizza = p.idPizza " +
+                            "AND cmd.idLivreur = ? " ;
+
+            PreparedStatement pStm = c.prepareStatement(sql_livraison);
+            pStm.setString(1, String.valueOf(livreur.id));
+            // Resultat
+            ResultSet resultSet1 = pStm.executeQuery();
+
+            while (resultSet1.next()) {
+                commandes.addRow((new Object[]{
+                        resultSet1.getInt("idCommande"),
+                        resultSet1.getDate("dateCommande"),
+                        resultSet1.getString("pizza"),
+                        resultSet1.getString("client"),
+                        resultSet1.getString("adresse")
+                }));
+            }
+
+            s.close();
+            c.close();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

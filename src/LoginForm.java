@@ -35,8 +35,9 @@ public class LoginForm extends JDialog{
                     } else if (client.role == 0) {
                         //Pour Lancement de fenetre admin
                         AdminInterface pnlAdmin = new AdminInterface();
-                    }/*else
-                        LivreurForm pnlLivreur = new LivreurForm();*/
+                    }else{
+                        DeliveryForm pnlLivreur = new DeliveryForm(parent);
+                    }
                 }
                 else{
                     JOptionPane.showMessageDialog(
@@ -66,6 +67,7 @@ public class LoginForm extends JDialog{
             ResultSet resultSet = pStm.executeQuery();
             if(resultSet.next()){
                 client = new Utilisateur();
+                client.id = resultSet.getInt("idUtilisateur");
                 client.nom = resultSet.getString("nom");
                 client.prenom = resultSet.getString("prenom");
                 client.email = resultSet.getString("mail");

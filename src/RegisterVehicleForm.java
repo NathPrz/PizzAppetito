@@ -13,7 +13,7 @@ public class RegisterVehicleForm extends JDialog {
     private JRadioButton radioMoto;
     private JButton BtnAddVehicle;
 
-    public Vehicle vehicle;
+    public Vehicule vehicule;
 
     public RegisterVehicleForm(JFrame parent) {
         super(parent);
@@ -35,8 +35,8 @@ public class RegisterVehicleForm extends JDialog {
         setVisible(true);
     }
 
-    private Vehicle ajouterVehicleDb(String immatriculation, Integer typeVehicle){
-        Vehicle v = null;
+    private Vehicule ajouterVehicleDb(String immatriculation, Integer typeVehicle){
+        Vehicule v = null;
         try {
             Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
 
@@ -48,7 +48,7 @@ public class RegisterVehicleForm extends JDialog {
             // Insert
             int addLine = pStm.executeUpdate();
             if(addLine > 0){
-                v = new Vehicle();
+                v = new Vehicule();
                 v.immatriculation = immatriculation;
                 v.typeVehicle = typeVehicle;
             }
@@ -85,8 +85,8 @@ public class RegisterVehicleForm extends JDialog {
             return false;
         }
 
-        vehicle = ajouterVehicleDb(immatriculation, typeVehicule);
-        if(vehicle != null){
+        vehicule = ajouterVehicleDb(immatriculation, typeVehicule);
+        if(vehicule != null){
             dispose();
             return true;
         }
@@ -100,9 +100,9 @@ public class RegisterVehicleForm extends JDialog {
 
     public static void main(String[] args) {
         RegisterVehicleForm registrationForm = new RegisterVehicleForm( null);
-        Vehicle vehicle = registrationForm.vehicle;
+        Vehicule vehicule = registrationForm.vehicule;
 
-        if(vehicle != null){
+        if(vehicule != null){
             System.out.println("Véhicule enregistré");
         }
         else{
