@@ -26,10 +26,10 @@ public class LoginForm extends JDialog{
                 String mdp = String.valueOf(pfMdp.getPassword());
 
                 client = getAuthentificationClient(email, mdp);
-                if(client != null){
+
+                if(client != null) {
                     dispose();
-                    //Pour Lancement de fenetre commande
-                    // OrderForm pnlCommande = new OrderForm(parent);
+                    OrderForm orderPanel = new OrderForm(parent);
                 }
                 else{
                     JOptionPane.showMessageDialog(
@@ -43,9 +43,10 @@ public class LoginForm extends JDialog{
         setVisible(true);
     }
 
-    public Utilisateur client;
+    public static Utilisateur client;
     private Utilisateur getAuthentificationClient(String email, String mdp) {
         Utilisateur client = null;
+
         try {
             Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
             // Connexion établie
@@ -84,6 +85,5 @@ public class LoginForm extends JDialog{
         else{
             System.out.println("Erreur d'authentification");
         }
-
     }
 }
