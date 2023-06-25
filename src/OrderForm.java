@@ -102,11 +102,49 @@ public class OrderForm extends JDialog {
 
         // Vérifier le solde du client
         if (client.solde < totalPrice) {
-            JOptionPane.showMessageDialog(
-                    OrderForm.this,
-                    "Solde insuffisant pour passer la commande.",
-                    "Erreur",
-                    JOptionPane.ERROR_MESSAGE);
+            float rechargeAmount = Float.parseFloat(JOptionPane.showInputDialog(OrderForm.this,
+                    "Votre solde est insuffisant pour passer la commande. Veuillez le recharger :",
+                    "Recharge de solde",
+                    JOptionPane.PLAIN_MESSAGE));
+
+            if (rechargeAmount <= 0) {
+                JOptionPane.showMessageDialog(OrderForm.this,
+                        "Montant de recharge invalide.",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Mise à jour du solde du client
+            try {
+                Connection connection = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
+                String updateQuery = "UPDATE utilisateur SET solde = solde + ? WHERE mail = ?";
+                PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+                updateStatement.setFloat(1, rechargeAmount);
+                updateStatement.setString(2, client.email);
+                updateStatement.executeUpdate();
+
+                // Mise à jour du solde local du client
+                client.solde += rechargeAmount;
+
+                JOptionPane.showMessageDialog(OrderForm.this,
+                        "Super ! Vous pouvez maintenant passer votre commande !",
+                        "Confirmation",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                // Repasser la commande
+                placeOrder(pizzaName);
+
+                updateStatement.close();
+                connection.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(OrderForm.this,
+                        "Erreur lors de la recharge de solde.",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
             return;
         }
 
