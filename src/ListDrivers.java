@@ -97,9 +97,6 @@ public class ListDrivers extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        return;
     }
 
     private void addDeleteBtn(){
