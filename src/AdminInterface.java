@@ -9,6 +9,7 @@ public class AdminInterface extends JFrame {
     private JButton BtnListVehicles;
     private JButton BtnListOrders;
     private JButton BtnListUsers;
+    private JButton BtnInfos;
 
     public AdminInterface(){
         setTitle("Administration");
@@ -44,6 +45,13 @@ public class AdminInterface extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListVehicles pnlVehicles = new ListVehicles(AdminInterface.this);
+            }
+        });
+
+        BtnInfos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GlobalInfos pnlInfos = new GlobalInfos(AdminInterface.this);
             }
         });
     }
