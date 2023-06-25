@@ -63,7 +63,7 @@ public class ListVehicles extends JFrame {
             Statement s = c.createStatement();
 
 
-            ResultSet resultSet1 = s.executeQuery("SELECT idVehicule, nImmatriculation FROM vehicule WHERE type = 1;");
+            ResultSet resultSet1 = s.executeQuery("SELECT idVehicule, nImmatriculation FROM vehicule WHERE typeVehicule = 1;");
 
 
             // Resultat
@@ -76,7 +76,7 @@ public class ListVehicles extends JFrame {
             }
 
             //pStm.setInt(1, 2);
-            ResultSet resultSet2 = s.executeQuery("SELECT idVehicule, nImmatriculation FROM vehicule WHERE type = 2;");
+            ResultSet resultSet2 = s.executeQuery("SELECT idVehicule, nImmatriculation FROM vehicule WHERE typeVehicule = 2;");
 
             // Resultat
             while (resultSet2.next()) {

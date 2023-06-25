@@ -9,12 +9,12 @@ public class AdminInterface extends JFrame {
     private JButton BtnListVehicles;
     private JButton BtnListOrders;
     private JButton BtnListUsers;
-    private JLabel Title;
 
     public AdminInterface(){
         setTitle("Administration");
         setContentPane(PnlAdmin);
         setMinimumSize(new Dimension(450,474));
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         setVisible(true);
@@ -34,9 +34,7 @@ public class AdminInterface extends JFrame {
         });
     }
 
-
-
     public static void main(String[] args){
-        AdminInterface myInterface = new AdminInterface();
+        AdminInterface pnlAdmin = new AdminInterface();
     }
 }

@@ -6,4 +6,6 @@ public class Utilisateur {
     public String mdp;
     public Float solde;
     public Integer nbPizzas;
+
+    public Integer role;
 }

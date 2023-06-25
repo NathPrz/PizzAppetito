@@ -6,21 +6,22 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class ListOrders extends JFrame{
+public class ListOrders extends JDialog{
     private JPanel PnlOrders;
     private JTable NewOrdersTable;
     private JTable DeliveringOrdersTable;
 
-    public ListOrders(JFrame Parent){
+    public ListOrders(JFrame parent){
+        super(parent);
         setTitle("Users list");
         setContentPane(PnlOrders);
         setMinimumSize(new Dimension(700,600));
+        setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
+        setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        setVisible(true);
-
         createTables();
         getOrdersList();
+        setVisible(true);
     }
 
 
@@ -80,7 +81,7 @@ public class ListOrders extends JFrame{
                         "CONCAT(livr.nom, ' ', livr.prenom) AS 'livreur', p.nom AS 'pizza', TIMEDIFF(NOW(), cmd.dateCommande) AS 'temps' " +
                     "FROM commande AS cmd, utilisateur AS u, pizza AS p, livreur AS livr " +
                     "WHERE cmd.idUtilisateur = u.idUtilisateur " +
-                    "AND cmd.idLivreur = livr.idLivreur " +
+                    "AND cmd.idLivreur = livr.idLivreur " + //à revoir car pas de table livreur
                     "AND cmd.idPizza = p.idPizza " +
                     "AND cmd.dateLivraison IS NULL;";
 

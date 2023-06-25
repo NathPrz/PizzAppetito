@@ -28,8 +28,15 @@ public class LoginForm extends JDialog{
                 client = getAuthentificationClient(email, mdp);
                 if(client != null){
                     dispose();
-                    //Pour Lancement de fenetre commande
-                    // OrderForm pnlCommande = new OrderForm(parent);
+                    if(client.role == 1)
+                    {
+                        //Pour Lancement de fenetre commande
+                        //OrderForm pnlCommande = new OrderForm(parent);
+                    } else if (client.role == 0) {
+                        //Pour Lancement de fenetre admin
+                        AdminInterface pnlAdmin = new AdminInterface();
+                    }/*else
+                        LivreurForm pnlLivreur = new LivreurForm();*/
                 }
                 else{
                     JOptionPane.showMessageDialog(
@@ -65,6 +72,7 @@ public class LoginForm extends JDialog{
                 client.mdp = resultSet.getString("mdp");
                 client.solde = resultSet.getFloat("solde");
                 client.nbPizzas = resultSet.getInt("nbPizzas");
+                client.role = resultSet.getInt("roleU");
             }
             s.close();
             c.close();

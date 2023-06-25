@@ -36,13 +36,13 @@ public class RegisterDriverForm extends JDialog{
         setVisible(true);
     }
 
-    private Utilisateur ajouterClientDb(String nom, String prenom, String mail, String mdp){
+    private Utilisateur ajouterUtilisateurDb(String nom, String prenom, String mail, String mdp){
         Utilisateur user = null;
         try {
             Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
 
 
-            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp, role)" +
+            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp, roleU)" +
                     "VALUES (?, ?, ?, ?, 2)";
             PreparedStatement pStm = c.prepareStatement(sql);
             pStm.setString(1, nom);
@@ -57,6 +57,7 @@ public class RegisterDriverForm extends JDialog{
                 user.prenom = prenom;
                 user.email = mail;
                 user.mdp = mdp;
+                user.role = 2;
             }
 
             c.close();
@@ -79,7 +80,7 @@ public class RegisterDriverForm extends JDialog{
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        livreur = ajouterClientDb(nom, prenom, mail, mdp);
+        livreur = ajouterUtilisateurDb(nom, prenom, mail, mdp);
         if(livreur != null){
             dispose();
             return true;
@@ -98,10 +99,10 @@ public class RegisterDriverForm extends JDialog{
         Utilisateur livreur = registrationForm.livreur;
 
         if(livreur != null){
-            System.out.println("Client enregistré");
+            System.out.println("Livreur enregistré");
         }
         else{
-            System.out.println("Enregistrement annullé");
+            System.out.println("Enregistrement annulé");
         }
     }
 }

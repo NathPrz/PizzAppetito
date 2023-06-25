@@ -32,7 +32,12 @@ public class RegistrationForm extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 enregistrerClient();
                 if(parent.getClass().getName() == "ListUsersInterface"){
+                    dispose();
                     ListUsersInterface listUsers = new ListUsersInterface(null);
+                }
+                else{
+                    dispose();
+                    OrderForm pnlCommande = new OrderForm();
                 }
             }
         });
@@ -78,7 +83,7 @@ public class RegistrationForm extends JDialog {
             // Connexion établie
             System.out.println("Init connexion");
             Statement s = c.createStatement();
-            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp, role)" +
+            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp, roleU)" +
                     "VALUES (?, ?, ?, ?, 1)";
             PreparedStatement pStm = c.prepareStatement(sql);
             pStm.setString(1, nom);
@@ -93,6 +98,7 @@ public class RegistrationForm extends JDialog {
                 client.prenom = prenom;
                 client.email = email;
                 client.mdp = mdp;
+                client.role = 1;
             }
             s.close();
             c.close();
@@ -110,7 +116,7 @@ public class RegistrationForm extends JDialog {
             System.out.println("Client enregistré");
         }
         else{
-            System.out.println("Enregistrement annullé");
+            System.out.println("Enregistrement annulé");
         }
     }
 }

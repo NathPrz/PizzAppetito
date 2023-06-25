@@ -9,19 +9,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
-public class ListUsersInterface extends JFrame {
+public class ListUsersInterface extends JDialog {
     private JPanel PnlUsers;
     private JLabel Title;
     private JTable usersTable;
     private JButton BtnAddUser;
 
-    public ListUsersInterface(JFrame Parent){
+    public ListUsersInterface(JFrame parent){
+        super(parent);
         setTitle("Users list");
         setContentPane(PnlUsers);
         setMinimumSize(new Dimension(700,600));
+        setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
+        setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        setVisible(true);
 
         createTable();
         getUsersList();
@@ -30,10 +31,11 @@ public class ListUsersInterface extends JFrame {
         BtnAddUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RegistrationForm pnlEnregistrement = new RegistrationForm(ListUsersInterface.this);
+                RegistrationForm pnlEnregistrement = new RegistrationForm(parent);
                 dispose();
             }
         });
+        setVisible(true);
     }
 
     private void createTable(){
@@ -57,7 +59,7 @@ public class ListUsersInterface extends JFrame {
             Statement s = c.createStatement();
 
             // Resultat
-            ResultSet resultSet = s.executeQuery("SELECT idUtilisateur, nom, prenom, mail, adresse, solde, nbPizzas FROM utilisateur WHERE role = 1;");
+            ResultSet resultSet = s.executeQuery("SELECT idUtilisateur, nom, prenom, mail, adresse, solde, nbPizzas FROM utilisateur WHERE roleU = 1;");
 
             while (resultSet.next()) {
                 model.addRow((new Object[]{
