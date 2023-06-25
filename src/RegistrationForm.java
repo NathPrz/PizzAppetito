@@ -31,7 +31,7 @@ public class RegistrationForm extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enregistrerClient();
-                if(parent.getClass().getName() == "ListUsersInterface"){
+                if(parent != null && parent.getClass().getName() == "ListUsersInterface"){
                     dispose();
                     ListUsersInterface listUsers = new ListUsersInterface(null);
                 }

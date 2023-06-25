@@ -30,7 +30,7 @@
                 </constraints>
                 <properties>
                   <font name="Segoe Print" size="20"/>
-                  <text value="Commandes en préparation"/>
+                  <text value="Commandes en cours de livraison"/>
                 </properties>
               </component>
             </children>
@@ -55,7 +55,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="83dc3" class="javax.swing.JTable" binding="NewOrdersTable">
+                  <component id="83dc3" class="javax.swing.JTable" binding="DeliveringOrdersTable">
                     <constraints/>
                     <properties/>
                   </component>
@@ -85,7 +85,7 @@
                     </constraints>
                     <properties>
                       <font name="Segoe Print" size="20"/>
-                      <text value="Commandes en cours de livraison"/>
+                      <text value="Dernières commandes livrées"/>
                     </properties>
                   </component>
                 </children>
@@ -105,7 +105,7 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="3849e" class="javax.swing.JTable" binding="DeliveringOrdersTable">
+                      <component id="3849e" class="javax.swing.JTable" binding="DeliveredOrdersTable">
                         <constraints/>
                         <properties/>
                       </component>

@@ -8,8 +8,8 @@ import java.sql.Statement;
 
 public class ListOrders extends JDialog{
     private JPanel PnlOrders;
-    private JTable NewOrdersTable;
     private JTable DeliveringOrdersTable;
+    private JTable DeliveredOrdersTable;
 
     public ListOrders(JFrame parent){
         super(parent);
@@ -27,9 +27,9 @@ public class ListOrders extends JDialog{
 
     private void createTables(){
 
-        NewOrdersTable.setModel(new DefaultTableModel(
+        DeliveredOrdersTable.setModel(new DefaultTableModel(
                 null,
-                new String[]{"Id", "Date Commande", "Pizza", "Taille", "Prix", "Client"}
+                new String[]{"Id", "Date Commande", "Pizza", "Taille", "Prix", "Client", "Livreur", "Temps de livraison"}
         ));
 
         DeliveringOrdersTable.setModel(new DefaultTableModel(
@@ -40,10 +40,11 @@ public class ListOrders extends JDialog{
     }
 
     private void getOrdersList(){
-        DefaultTableModel model1 = (DefaultTableModel) NewOrdersTable.getModel();
-        DefaultTableModel model2 = (DefaultTableModel) DeliveringOrdersTable.getModel();
-        model1.setRowCount(0);
-        model2.setRowCount(0);
+        DefaultTableModel enCoursDeLivraison = (DefaultTableModel) DeliveringOrdersTable.getModel();
+        DefaultTableModel livrees = (DefaultTableModel) DeliveredOrdersTable.getModel();
+
+        enCoursDeLivraison.setRowCount(0);
+        livrees.setRowCount(0);
 
         try {
             Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
@@ -51,45 +52,49 @@ public class ListOrders extends JDialog{
             // Connexion établie
             Statement s = c.createStatement();
 
-            // Commandes qui n'ont pas encore été prises en charge par un livreur
-            String sql1 =
+            // Commandes qui sont en cours de livraison
+            String sql_livraison =
                     "SELECT " +
                         "cmd.idCommande, cmd.dateCommande, cmd.taille, cmd.prixFinal, CONCAT(u.nom, ' ' , u.prenom) AS 'client'," +
-                        "p.nom AS 'pizza' " +
-                    "FROM commande AS cmd, utilisateur AS u, pizza AS p " +
+                        "CONCAT(livr.nom, ' ', livr.prenom) AS 'livreur', p.nom AS 'pizza', TIMEDIFF(cmd.dateLivraison, cmd.dateCommande) AS 'temps'  " +
+                    "FROM commande AS cmd, utilisateur AS u, utilisateur AS livr, pizza AS p " +
                     "WHERE cmd.idUtilisateur = u.idUtilisateur " +
+                    "AND cmd.idLivreur = livr.idUtilisateur " +
                     "AND cmd.idPizza = p.idPizza " +
-                    "AND cmd.idLivreur IS NULL;";
+                    "AND cmd.dateLivraison IS NULL";
             // Resultat
-            ResultSet resultSet1 = s.executeQuery(sql1);
+            ResultSet resultSet1 = s.executeQuery(sql_livraison);
 
             while (resultSet1.next()) {
-                model1.addRow((new Object[]{
+                enCoursDeLivraison.addRow((new Object[]{
                         resultSet1.getInt("idCommande"),
                         resultSet1.getDate("dateCommande"),
                         resultSet1.getString("pizza"),
                         resultSet1.getInt("taille"),
                         resultSet1.getFloat("prixFinal"),
-                        resultSet1.getString("client")
+                        resultSet1.getString("client"),
+                        resultSet1.getString("livreur"),
+                        resultSet1.getString("temps"),
                 }));
             }
 
             // Commandes qui sont en cours de livraison
-            String sql2 =
+            String sql_livrees =
                     "SELECT " +
                         "cmd.idCommande, cmd.dateCommande, cmd.taille, cmd.prixFinal, CONCAT(u.nom, ' ' , u.prenom) AS 'client'," +
                         "CONCAT(livr.nom, ' ', livr.prenom) AS 'livreur', p.nom AS 'pizza', TIMEDIFF(NOW(), cmd.dateCommande) AS 'temps' " +
-                    "FROM commande AS cmd, utilisateur AS u, pizza AS p, livreur AS livr " +
+                    "FROM commande AS cmd, utilisateur AS u, utilisateur AS livr, pizza AS p " +
                     "WHERE cmd.idUtilisateur = u.idUtilisateur " +
-                    "AND cmd.idLivreur = livr.idLivreur " + //à revoir car pas de table livreur
+                    "AND cmd.idLivreur = livr.idUtilisateur " +
                     "AND cmd.idPizza = p.idPizza " +
-                    "AND cmd.dateLivraison IS NULL;";
+                    "AND cmd.dateLivraison IS NOT NULL " +
+                    "LIMIT 15";
 
             // Resultat
-            ResultSet resultSet2 = s.executeQuery(sql2);
+            ResultSet resultSet2 = s.executeQuery(sql_livrees);
 
             while (resultSet2.next()) {
-                model2.addRow((new Object[]{
+                livrees.addRow((new Object[]{
                         resultSet2.getInt("idCommande"),
                         resultSet2.getDate("dateCommande"),
                         resultSet2.getString("pizza"),

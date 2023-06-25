@@ -32,6 +32,20 @@ public class AdminInterface extends JFrame {
                 ListDrivers pnlDrivers= new ListDrivers(AdminInterface.this);
             }
         });
+
+        BtnListOrders.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ListOrders pnlOrders = new ListOrders(AdminInterface.this);
+            }
+        });
+
+        BtnListVehicles.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ListVehicles pnlVehicles = new ListVehicles(AdminInterface.this);
+            }
+        });
     }
 
     public static void main(String[] args){
