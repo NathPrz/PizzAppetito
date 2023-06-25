@@ -36,7 +36,7 @@ public class ListDrivers extends JFrame {
 
         driversTable.setModel(new DefaultTableModel(
                 null,
-                new String[]{"Id", "Nom", "Prénom", "Mail", ""}
+                new String[]{"Id", "Nom", "Prénom", "Mail", "Retards", ""}
         ));
 
     }
@@ -53,7 +53,12 @@ public class ListDrivers extends JFrame {
             Statement s = c.createStatement();
 
             // Resultat
-            ResultSet resultSet = s.executeQuery("SELECT idUtilisateur, nom, prenom, mail FROM utilisateur WHERE roleU = 2;");
+            ResultSet resultSet = s.executeQuery("SELECT count(*) AS retards, idUtilisateur, nom, prenom, mail FROM\n" +
+                    "(SELECT u.idUtilisateur, u.nom, u.prenom, u.mail, dateLivraison, dateCommande, " +
+                        "TIMEDIFF(dateLivraison, dateCommande) FROM utilisateur AS u, commande AS cmd " +
+                    "WHERE u.idUtilisateur = cmd.idLivreur AND roleU = 2 AND dateLivraison IS NOT NULL\n" +
+                    "HAVING TIMEDIFF(dateLivraison, dateCommande) > '00:05') AS c \n" +
+                    "GROUP BY idUtilisateur; ");
 
             while (resultSet.next()) {
                 model.addRow((new Object[]{
@@ -61,6 +66,7 @@ public class ListDrivers extends JFrame {
                         resultSet.getString("nom"),
                         resultSet.getString("prenom"),
                         resultSet.getString("mail"),
+                        resultSet.getString("retards"),
                         "Delete"
                 }));
             }
@@ -116,7 +122,7 @@ public class ListDrivers extends JFrame {
 
             }
         };
-        ButtonColumn buttonColumn = new ButtonColumn(driversTable, delete, 4);
+        ButtonColumn buttonColumn = new ButtonColumn(driversTable, delete, 5);
     }
 
     public static void main(String[] args) {

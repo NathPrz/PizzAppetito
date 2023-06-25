@@ -42,7 +42,7 @@ public class ListUsersInterface extends JDialog {
 
         usersTable.setModel(new DefaultTableModel(
                 null,
-                new String[]{"Id", "Nom", "Prénom", "Mail", "Adresse", "Solde", "Nombre de pizzas commandées", ""}
+                new String[]{"Id", "Nom", "Prénom", "Mail", "Adresse", "Solde", "Nombre de pizzas commandées", "Dépenses", ""}
         ));
 
     }
@@ -59,7 +59,12 @@ public class ListUsersInterface extends JDialog {
             Statement s = c.createStatement();
 
             // Resultat
-            ResultSet resultSet = s.executeQuery("SELECT idUtilisateur, nom, prenom, mail, adresse, solde, nbPizzas FROM utilisateur WHERE roleU = 1;");
+            ResultSet resultSet = s.executeQuery("SELECT u.idUtilisateur, u.nom, u.prenom, u.mail, u.adresse, u.solde, " +
+                    "u.nbPizzas, SUM(cmd.prixFinal) AS depenses " +
+                    "FROM utilisateur AS u, commande AS cmd " +
+                    "WHERE u.idUtilisateur = cmd.idUtilisateur " +
+                    "AND roleU = 1 " +
+                    "GROUP BY u.idUtilisateur;");
 
             while (resultSet.next()) {
                 model.addRow((new Object[]{
@@ -70,6 +75,7 @@ public class ListUsersInterface extends JDialog {
                         resultSet.getString("adresse"),
                         resultSet.getFloat("solde"),
                         resultSet.getInt("nbPizzas"),
+                        resultSet.getFloat("depenses") + " €",
                         "Delete"
                 }));
             }
@@ -128,7 +134,7 @@ public class ListUsersInterface extends JDialog {
 
             }
         };
-        ButtonColumn buttonColumn = new ButtonColumn(usersTable, delete, 7);
+        ButtonColumn buttonColumn = new ButtonColumn(usersTable, delete, 8);
     }
 
     public void addUser(Utilisateur client){
