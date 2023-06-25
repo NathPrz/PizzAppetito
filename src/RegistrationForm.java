@@ -54,6 +54,7 @@ public class RegistrationForm extends JDialog {
     private void enregistrerClient() {
         String nom = tfNom.getText();
         String prenom = tfPrenom.getText();
+        String adresse = tfAdresse.getText();
         String email = tfEmail.getText();
         String mdp = String.valueOf(pfMotDePasse.getPassword());
         if(nom.isEmpty() || prenom.isEmpty() || email.isEmpty() ||mdp.isEmpty()){
@@ -64,7 +65,7 @@ public class RegistrationForm extends JDialog {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        client = ajouterClientDb(nom, prenom, email, mdp);
+        client = ajouterClientDb(nom, prenom, adresse, email, mdp);
         if(client != null){
             dispose();
         }
@@ -76,26 +77,28 @@ public class RegistrationForm extends JDialog {
         }
     }
     public static Utilisateur client;
-    private Utilisateur ajouterClientDb(String nom, String prenom, String email, String mdp) {
+    private Utilisateur ajouterClientDb(String nom, String prenom, String adresse, String email, String mdp) {
         Utilisateur client = null;
         try {
             Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
             // Connexion établie
             System.out.println("Init connexion");
             Statement s = c.createStatement();
-            String sql = "INSERT INTO utilisateur (nom, prenom, mail, mdp, roleU)" +
-                    "VALUES (?, ?, ?, ?, 1)";
+            String sql = "INSERT INTO utilisateur (nom, prenom, adresse, mail, mdp, roleU)" +
+                    "VALUES (?, ?, ?, ?, ?, 1)";
             PreparedStatement pStm = c.prepareStatement(sql);
             pStm.setString(1, nom);
             pStm.setString(2, prenom);
-            pStm.setString(3, email);
-            pStm.setString(4, mdp);
+            pStm.setString(3, adresse);
+            pStm.setString(4, email);
+            pStm.setString(5, mdp);
             // Insert
             int addLine = pStm.executeUpdate();
             if(addLine > 0){
                 client = new Utilisateur();
                 client.nom = nom;
                 client.prenom = prenom;
+                client.adresse = adresse;
                 client.email = email;
                 client.mdp = mdp;
                 client.role = 1;
