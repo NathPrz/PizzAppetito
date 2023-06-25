@@ -37,7 +37,7 @@ public class RegistrationForm extends JDialog {
                 }
                 else{
                     dispose();
-                    OrderForm pnlCommande = new OrderForm(parent);
+                    LoginForm pnlLogin = new LoginForm(parent);
                 }
             }
         });
@@ -76,7 +76,7 @@ public class RegistrationForm extends JDialog {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-    public static Utilisateur client;
+    public Utilisateur client;
     private Utilisateur ajouterClientDb(String nom, String prenom, String adresse, String email, String mdp) {
         Utilisateur client = null;
         try {

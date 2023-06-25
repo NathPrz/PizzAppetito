@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,12 +15,14 @@ public class OrderForm extends JDialog {
     private JButton buttonMediterranea;
     private JButton buttonFromaggi;
     private JPanel orderPanel;
+    private JTextField tfSolde;
+    private JTextField tfNbPizzas;
 
     public OrderForm(JFrame parent) {
         super(parent);
         setTitle("Commande");
         setContentPane(orderPanel);
-        setMinimumSize(new Dimension(450,650));
+        setMinimumSize(new Dimension(550,750));
         setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -62,6 +63,9 @@ public class OrderForm extends JDialog {
                 placeOrder("Mediterranea");
             }
         });
+
+        tfSolde.setText(String.valueOf(LoginForm.client.solde));
+        tfNbPizzas.setText(String.valueOf(LoginForm.client.nbPizzas));
 
         setVisible(true);
     }

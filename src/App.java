@@ -11,7 +11,7 @@ public class App extends JFrame {
     public App() {
         setTitle("PizzAppetito");
         setContentPane(MainPanel);
-        setMinimumSize(new Dimension(450,474));
+        setMinimumSize(new Dimension(450,574));
         ImageIcon icon = new ImageIcon("pizza-100.png");
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
