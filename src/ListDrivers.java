@@ -14,9 +14,8 @@ public class ListDrivers extends JFrame {
         setTitle("Users list");
         setContentPane(PnlDrivers);
         setMinimumSize(new Dimension(700,600));
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        setVisible(true);
 
         createTable();
         getDriversList();
@@ -30,6 +29,7 @@ public class ListDrivers extends JFrame {
                 dispose();
             }
         });
+        setVisible(true);
     }
 
     private void createTable(){
@@ -53,7 +53,7 @@ public class ListDrivers extends JFrame {
             Statement s = c.createStatement();
 
             // Resultat
-            ResultSet resultSet = s.executeQuery("SELECT idUtilisateur, nom, prenom, mail FROM utilisateur WHERE role = 2;");
+            ResultSet resultSet = s.executeQuery("SELECT idUtilisateur, nom, prenom, mail FROM utilisateur WHERE roleU = 2;");
 
             while (resultSet.next()) {
                 model.addRow((new Object[]{

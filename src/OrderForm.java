@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -267,10 +268,43 @@ public class OrderForm extends JDialog {
     }
     private int getRandomLivreurId() {
         Random random = new Random();
-        int[] livreurId = {1, 2, 3};
+        int[] livreurId = getDriversIds();
 
         int randomIndex = random.nextInt(livreurId.length);
         return livreurId[randomIndex];
+    }
+    private int[] getDriversIds(){
+        int[] driversIds = null;
+
+        try {
+            Connection c = DriverManager.getConnection(DBCredentials.db_URL, DBCredentials.userName, DBCredentials.motDPasse);
+
+            // Connexion établie
+            Statement s = c.createStatement();
+
+            // Récupérer le nombre de conducteurs
+            ResultSet countResultSet = s.executeQuery("SELECT COUNT(idUtilisateur) as count FROM utilisateur WHERE roleU = 2;");
+            countResultSet.next();
+            int count = countResultSet.getInt("count");
+
+            // Initialiser le tableau avec la taille appropriée
+            driversIds = new int[count];
+
+            // Récupérer les idUtilisateur des conducteurs
+            ResultSet resultSet = s.executeQuery("SELECT idUtilisateur FROM utilisateur WHERE roleU = 2;");
+            int i = 0;
+            while (resultSet.next()) {
+                driversIds[i] =  resultSet.getInt("idUtilisateur");
+                i++;
+            }
+
+            s.close();
+            c.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return driversIds;
     }
     private int getPizzaSizeValue(String pizzaSize) {
         switch (pizzaSize.toUpperCase()) {
